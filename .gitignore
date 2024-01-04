@@ -1,2 +1,4 @@
-/result/
+# output folder for nix
+/result
+
 /target/
