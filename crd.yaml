@@ -37,39 +37,40 @@ spec:
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: tables.psql.midugh.fr
+  name: databases.psql.midugh.fr
 spec:
   group: psql.midugh.fr
   names:
     categories: []
-    kind: Table
-    plural: tables
-    shortNames: []
-    singular: table
+    kind: Database
+    plural: databases
+    shortNames:
+    - db
+    singular: database
   scope: Namespaced
   versions:
   - additionalPrinterColumns: []
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Auto-generated derived type for TableSpec via `CustomResource`
+        description: Auto-generated derived type for DatabaseSpec via `CustomResource`
         properties:
           spec:
             properties:
-              password:
+              name:
                 type: string
-              tableName:
+              password:
                 type: string
               username:
                 type: string
             required:
+            - name
             - password
-            - tableName
             - username
             type: object
         required:
         - spec
-        title: Table
+        title: Database
         type: object
     served: true
     storage: true

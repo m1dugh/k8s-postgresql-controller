@@ -11,10 +11,10 @@ pub struct ManagerSpec {
 
 #[allow(non_snake_case)]
 #[derive(CustomResource, JsonSchema, Serialize, Deserialize, Clone, Debug)]
-#[kube(group="psql.midugh.fr", version="v1alpha1", kind = "Table", namespaced)]
-#[kube(plural = "tables", singular = "table")]
-pub struct TableSpec {
-    pub tableName: String,
+#[kube(group="psql.midugh.fr", version="v1alpha1", kind = "Database", namespaced)]
+#[kube(plural = "databases", singular = "database", shortname = "db")]
+pub struct DatabaseSpec {
+    pub name: String,
     pub username: String,
     pub password: String,
 }

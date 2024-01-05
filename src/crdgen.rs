@@ -6,6 +6,6 @@ fn main() {
     println!("---");
     print!("{}", serde_yaml::to_string(&crds::Manager::crd()).unwrap());
     println!("---");
-    print!("{}", serde_yaml::to_string(&crds::Table::crd()).unwrap());
+    print!("{}", serde_yaml::to_string(&crds::Database::crd()).unwrap());
     println!("---");
 }
