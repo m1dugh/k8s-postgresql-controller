@@ -33,7 +33,31 @@ async fn on_db_applied(db: Database, managers_map: ManagersMap) -> bool {
     true
 }
 
-async fn on_db_removed(_db: Database, _managers_map: ManagersMap) -> bool {
+async fn on_db_removed(db: Database, managers_map: ManagersMap) -> bool {
+    let _namespace = db.namespace().clone().unwrap();
+
+    let annotations = match db.metadata.annotations.clone() {
+        Some(v) => v,
+        _ => return false,
+    };
+
+    let manager_name = match annotations.get(ANNOTATION_KEY) {
+        Some(v) => v.to_string(),
+        _ => return false,
+    };
+
+    if let Some(manager) = managers_map.lock().unwrap().get(&manager_name) {
+        if let Err(e) = manager.delete_user(&db.spec.username).await {
+            eprintln!("drop user: {e}");
+            return false
+        }
+
+        if let Err(e) = manager.delete_db(&db.spec.name).await {
+            eprintln!("drop db: {e}");
+            return false;
+        }
+    }
+
     true
 }
 

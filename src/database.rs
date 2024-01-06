@@ -21,6 +21,7 @@ impl DBManager {
 
     pub async fn create_user(&self, username: &String, password: &String) -> Result<(), Error> {
 
+        // TODO: sanitize input
         let stmt = format!("
             create user {}
             with nocreatedb nocreaterole nosuperuser
@@ -33,11 +34,39 @@ impl DBManager {
         Ok(())
     }
 
+    pub async fn delete_user(&self, username: &String) -> Result<(), Error> {
+        let stmt = format!("
+            drop user {}
+        ", username);
+
+        self.client
+            .execute(&stmt, &[]).await?;
+        Ok(())
+    }
+
     pub async fn create_db(&self, name: &String, owner: &String) -> Result<(), Error> {
-        self.client.execute("
-            create database $1
-            with owner $2
-        ", &[&name, &owner]).await?;
+
+        // TODO: sanitize input
+
+        let stmt = format!("
+            create database {}
+            with owner {}
+        ", name, owner);
+
+        self.client
+            .execute(&stmt, &[])
+            .await?;
+
+        Ok(())
+    }
+
+    pub async fn delete_db(&self, name: &String) -> Result<(), Error> {
+        // TODO: sanitize input
+        let stmt = format!("drop db {}", name);
+
+        self.client
+            .execute(&stmt, &[])
+            .await?;
 
         Ok(())
     }
