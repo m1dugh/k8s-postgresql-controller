@@ -62,7 +62,7 @@ impl DBManager {
 
     pub async fn delete_db(&self, name: &String) -> Result<(), Error> {
         // TODO: sanitize input
-        let stmt = format!("drop db {}", name);
+        let stmt = format!("drop database {}", name);
 
         self.client
             .execute(&stmt, &[])

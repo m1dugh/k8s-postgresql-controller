@@ -10,24 +10,27 @@ async fn on_db_applied(db: Database, managers_map: ManagersMap) -> bool {
 
     let annotations = match db.metadata.annotations.clone() {
         Some(v) => v,
-        _ => return false,
+        _ => return true,
     };
 
     let manager_name = match annotations.get(ANNOTATION_KEY) {
         Some(v) => v.to_string(),
-        _ => return false,
+        _ => return true,
     };
+
 
     if let Some(manager) = managers_map.lock().unwrap().get(&manager_name) {
         if let Err(e) = manager.create_user(&db.spec.username, &db.spec.password).await {
             eprintln!("create user: {e}");
-            return false
+            return true;
         }
+        println!("created user: {}", &db.spec.username);
 
         if let Err(e) = manager.create_db(&db.spec.name, &db.spec.username).await {
             eprintln!("create db: {e}");
-            return false;
+            return true;
         }
+        println!("created db: {}", &db.spec.name);
     }
 
     true
@@ -38,24 +41,29 @@ async fn on_db_removed(db: Database, managers_map: ManagersMap) -> bool {
 
     let annotations = match db.metadata.annotations.clone() {
         Some(v) => v,
-        _ => return false,
+        _ => return true,
     };
 
     let manager_name = match annotations.get(ANNOTATION_KEY) {
         Some(v) => v.to_string(),
-        _ => return false,
+        _ => return true,
     };
 
     if let Some(manager) = managers_map.lock().unwrap().get(&manager_name) {
-        if let Err(e) = manager.delete_user(&db.spec.username).await {
-            eprintln!("drop user: {e}");
-            return false
-        }
 
         if let Err(e) = manager.delete_db(&db.spec.name).await {
             eprintln!("drop db: {e}");
-            return false;
+            return true;
         }
+
+        println!("dropped db: {}", &db.spec.name);
+
+        if let Err(e) = manager.delete_user(&db.spec.username).await {
+            eprintln!("drop user: {e}");
+            return true;
+        }
+
+        println!("dropped user: {}", &db.spec.username);
     }
 
     true
