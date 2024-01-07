@@ -5,7 +5,7 @@ use kube::runtime::watcher;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
-use crate::crds::{Manager, ManagerSpec};
+use crate::crds::Manager;
 use crate::database::DBManager;
 
 pub type ManagersMap = Arc<Mutex<HashMap<String, DBManager>>>;

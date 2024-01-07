@@ -9,10 +9,6 @@ COPY ./src/ ./src/
 COPY ./Cargo.toml .
 COPY ./Cargo.lock .
 
-FROM base as crdgen
-
-RUN cargo run --bin crdgen > crd.yaml
-
 FROM base as builder
 
 RUN cargo build --release
@@ -21,7 +17,6 @@ FROM alpine:3.19
 
 WORKDIR /app
 
-COPY --from=crdgen /app/crd.yaml .
 COPY --from=builder /app/target/release/postgresql-controller .
 
 RUN adduser app -D -u 1000 -h /app && \
